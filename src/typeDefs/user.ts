@@ -6,14 +6,19 @@ export default gql`
         username: String!
         password: String!
         posts: [Post]!
-        createdAt: DateTime!
+        createdDate: DateTime!
     }
 
     type Token {
         token: String!
     }
 
+    extend type Query {
+        users: [User]!
+        user(id: String!): User!
+    }
+
     extend type Mutation {
-        signUp(username: String!, password: String!): User
+        signUp(username: String!, password: String!): User!
     }
 `;

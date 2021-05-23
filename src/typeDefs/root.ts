@@ -5,8 +5,6 @@ export default gql`
 
     type Query {
         _: String
-        users: [User]!
-        posts: [Post]!
     }
 
     type Mutation {

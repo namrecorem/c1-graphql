@@ -6,6 +6,6 @@ export default gql`
         title: String!
         content: String!
         author: User!
-        createdAt: DateTime!
+        createdDate: DateTime!
     }
 `;
