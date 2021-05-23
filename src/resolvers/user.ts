@@ -3,6 +3,29 @@ import { ApolloError } from 'apollo-server';
 import services from '../services';
 
 export default {
+    User: {
+        posts: async (parent) => {
+            try {
+                const userService = services.userService();
+
+                return (await userService.getUserById(parent.id)).posts;
+            }
+            catch(err) {
+                throw new ApolloError(err.message)
+            }
+        },
+        likedPosts: async (parent) => {
+            try {
+                const userService = services.userService();
+
+                return (await userService.getUserById(parent.id)).likedPosts;
+            }
+            catch(err) {
+                throw new ApolloError(err.message)
+            }
+        }
+    },
+
     Query: {
         users: () => {
             const userService = services.userService();

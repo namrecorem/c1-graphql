@@ -9,13 +9,13 @@ const postService = () => {
     const userRepository = getRepository(User);
 
     const getAllPosts = async () => {
-        const posts = await postRepository.find({});
+        const posts = await postRepository.find({ relations: ['author', 'likedByUsers'] });
     
         return posts;
     };
     
     const getPostById = async (id: string) => {
-        const foundPost = await postRepository.findOne({ id });
+        const foundPost = await postRepository.findOne({ id }, { relations: ['author', 'likedByUsers'] });
     
         if (!foundPost) throw new Error('Post not found');
     
@@ -45,11 +45,41 @@ const postService = () => {
         await postRepository.remove(foundPost);
     }
 
+    const likeOrUnlikePostById = async (id: string, userId: string) => {
+        const foundPost = await postRepository.findOne({ id }, { relations: ['likedByUsers'] });
+        const foundUser = await userRepository.findOne({ id: userId });
+
+        if (!foundPost) throw new Error('Post not found');
+
+        // There is not anything, so like
+        if (!foundPost.likedByUsers) {
+            foundPost.likedByUsers = [foundUser];
+
+            const updatedPost = await postRepository.save(foundPost);
+
+            return updatedPost;
+        }
+
+        // Not like yet, so like
+        if (!foundPost.likedByUsers.includes(foundUser)) {
+            foundPost.likedByUsers = foundPost.likedByUsers.concat(foundUser);
+        }
+        // Liked already, so unlike
+        else {
+            foundPost.likedByUsers = foundPost.likedByUsers.filter(user => user.id !== foundUser.id);
+        }
+
+        const updatedPost = await postRepository.save(foundPost);
+
+        return updatedPost;
+    }
+
     return {
         getAllPosts,
         getPostById,
         createPost,
-        deletePostById
+        deletePostById,
+        likeOrUnlikePostById
     }
 }
 

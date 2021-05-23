@@ -12,10 +12,12 @@ export default gql`
 
     extend type Query {
         posts: [Post]!
+        post(id: String!): Post!
     }
 
     extend type Mutation {
         addPost(title: String!, content: String!): Post!
-        deletePost(id: String): String
+        deletePost(id: String!): String!
+        likeOrUnlikePost(id: String!): Post!
     }
 `;

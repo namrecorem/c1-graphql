@@ -4,7 +4,8 @@ export default gql`
     type User {
         id: ID!
         username: String!
-        posts: [Post!]
+        posts: [Post]
+        likedPosts: [Post]
         createdDate: DateTime!
     }
 

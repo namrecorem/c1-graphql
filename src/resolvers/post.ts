@@ -3,13 +3,36 @@ import { ApolloError } from 'apollo-server';
 import services from '../services';
 
 export default {
+    Post: {
+        author: async (parent) => {
+            try {
+                const postService = services.postService();
+
+                return (await postService.getPostById(parent.id)).author;
+            }
+            catch(err) {
+                throw new ApolloError(err.message)
+            }
+        },
+        likedByUsers: async (parent) => {
+            try {
+                const postService = services.postService();
+
+                return (await postService.getPostById(parent.id)).likedByUsers;
+            }
+            catch(err) {
+                throw new ApolloError(err.message)
+            }
+        }
+    },
+
     Query: {
         posts: () => {
             const postService = services.postService();
 
             return postService.getAllPosts();
         },
-        user: async (_, { id }) => {
+        post: async (_, { id }) => {
             try {
                 const postService = services.postService();
 
@@ -46,6 +69,20 @@ export default {
                 await postService.deletePostById(id, user.id);
 
                 return "Delete post successfully";
+            }
+            catch(err) {
+                throw new ApolloError(err.message)
+            }
+        },
+        likeOrUnlikePost: async (_, { id }, { user }) => {
+            try {
+                if (!user) throw new ApolloError('Unauthorization');
+
+                const postService = services.postService();
+
+                const updatedPost = await postService.likeOrUnlikePostById(id, user.id);
+
+                return updatedPost;
             }
             catch(err) {
                 throw new ApolloError(err.message)

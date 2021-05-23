@@ -9,13 +9,13 @@ const userService = () => {
     const userRepository = getRepository(User);
 
     const getAllUsers = async () => {
-        const users = await userRepository.find({});
+        const users = await userRepository.find({ relations: ['posts', 'likedPosts'] });
     
         return users;
     };
     
     const getUserById = async (id: string) => {
-        const foundUser = await userRepository.findOne({ id });
+        const foundUser = await userRepository.findOne({ id }, { relations: ['posts', 'likedPosts'] });
     
         if (!foundUser) throw new Error('User not found');
     

@@ -1,4 +1,3 @@
-import { ApolloError } from "apollo-server-errors";
 import jwt from 'jsonwebtoken';
 
 const auth = ({ req }) => {
@@ -17,7 +16,9 @@ const auth = ({ req }) => {
         }
     }
     catch(err) {
-        throw new ApolloError('Invalid token');
+        return {
+            user: null
+        }
     }
 };
 
