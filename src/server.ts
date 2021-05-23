@@ -4,6 +4,7 @@ import 'reflect-metadata';
 
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
+import auth from './services/auth';
 
 const initServer = () => {
     // Database connection
@@ -12,7 +13,7 @@ const initServer = () => {
         host: 'localhost',
         port: 5432,
         username: 'postgres',
-        password: 'namdeptrai',
+        password: '',
         database: 'test',
         synchronize: true,
         logging: false,
@@ -23,7 +24,8 @@ const initServer = () => {
 
     const server = new ApolloServer({
         typeDefs,
-        resolvers
+        resolvers,
+        context: auth
     });
 
     server.listen().then(({ url }) => console.log(`Server is running at ${url}`));

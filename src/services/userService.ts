@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 import User from '../models/User';
 
@@ -42,18 +43,40 @@ const userService = () => {
     }
     
     const deleteUserById = async (id: string) => {
-        const foundUser = await userRepository.find({ id });
+        const foundUser = await userRepository.findOne({ id });
     
         if (!foundUser) throw new Error('User not found');
     
-        await userRepository.delete({ id });
+        await userRepository.remove(foundUser);
+    }
+
+    const authenticateUser = async ({ username, password }: { username: string, password: string }) => {
+        const foundUser = await userRepository.findOne({ username });
+    
+        if (!foundUser) throw new Error('Wrong username or password');
+
+        // Check password
+        const matched = await bcrypt.compare(password, foundUser.password);
+
+        if (!matched) throw new Error('Wrong username or password.');
+
+        const token = jwt.sign(
+            { id: foundUser.id, username: foundUser.username },
+            'myJwtSecret',
+            { expiresIn: '1h' }
+        )
+
+        return {
+            token
+        };
     }
 
     return {
         getAllUsers,
         getUserById,
         createUser,
-        deleteUserById
+        deleteUserById,
+        authenticateUser
     }
 }
 

@@ -6,6 +6,16 @@ export default gql`
         title: String!
         content: String!
         author: User!
+        likedByUsers: [User]
         createdDate: DateTime!
+    }
+
+    extend type Query {
+        posts: [Post]!
+    }
+
+    extend type Mutation {
+        addPost(title: String!, content: String!): Post!
+        deletePost(id: String): String
     }
 `;

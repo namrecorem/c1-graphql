@@ -4,13 +4,17 @@ export default gql`
     type User {
         id: ID!
         username: String!
-        password: String!
-        posts: [Post]!
+        posts: [Post!]
         createdDate: DateTime!
     }
 
     type Token {
         token: String!
+    }
+
+    input UsernameAndPassword {
+        username: String!,
+        password: String!
     }
 
     extend type Query {
@@ -19,6 +23,7 @@ export default gql`
     }
 
     extend type Mutation {
-        signUp(username: String!, password: String!): User!
+        signUp(data: UsernameAndPassword!): User!
+        signIn(data: UsernameAndPassword!): Token!
     }
 `;

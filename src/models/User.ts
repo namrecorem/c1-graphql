@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToMany, ManyToMany } from 'typeorm';
 
 import Post from './Post';
 
@@ -15,6 +15,9 @@ export default class User {
 
     @OneToMany(type => Post, post => post.author)
     posts: Post[];
+
+    @ManyToMany(type => Post, post => post.likedByUsers)
+    likedPosts: Post[];
 
     @CreateDateColumn()
     createdDate: Date;

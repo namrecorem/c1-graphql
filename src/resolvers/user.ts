@@ -22,13 +22,27 @@ export default {
     },
 
     Mutation: {
-        signUp: async (_, { username, password }) => {
+        signUp: async (_, { data }) => {
             try {
+                const { username, password } = data;
                 const userService = services.userService();
 
                 const newUser = await userService.createUser({ username, password });
 
                 return newUser;
+            }
+            catch(err) {
+                throw new ApolloError(err.message);
+            }
+        },
+        signIn: async (_, { data }) => {
+            try {
+                const { username, password } = data;
+                const userService = services.userService();
+
+                const token = await userService.authenticateUser({ username, password });
+
+                return token;
             }
             catch(err) {
                 throw new ApolloError(err.message);
