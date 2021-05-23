@@ -2,8 +2,9 @@ import { ApolloServer, gql } from 'apollo-server';
 import { createConnection } from 'typeorm';
 import 'reflect-metadata';
 
-import typeDefs from './typeDefs/index';
-import resolvers from './resolvers/index';
+import typeDefs from './typeDefs';
+import resolvers from './resolvers';
+import services from './services';
 
 // Database connection
 createConnection({
@@ -20,6 +21,10 @@ createConnection({
 .then(() => console.log('Database connected'))
 .catch((err) => console.log(err));
 
-const server = new ApolloServer({ typeDefs, resolvers, dataSources: () => ({}) });
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: { services }
+});
 
 server.listen().then(({ url }) => console.log(`Server is running at ${url}`));

@@ -17,5 +17,5 @@ export default class User {
     posts: Post[];
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdDate: Date;
 };
