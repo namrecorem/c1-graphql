@@ -13,7 +13,7 @@ const initServer = () => {
         host: 'localhost',
         port: 5432,
         username: 'postgres',
-        password: 'namdeptrai',
+        password: '',
         database: 'test',
         synchronize: true,
         logging: false,
