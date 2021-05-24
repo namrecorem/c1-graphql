@@ -13,6 +13,9 @@ export default class User {
     @Column({ nullable: false })
     password: string;
 
+    @Column({ nullable: true })
+    avatarUrl: string;
+
     @OneToMany(type => Post, post => post.author)
     posts: Post[];
 

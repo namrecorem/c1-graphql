@@ -1,4 +1,5 @@
 import { ApolloError } from 'apollo-server';
+import { v2 as cloudinary } from 'cloudinary';
 
 import services from '../services';
 
@@ -66,6 +67,42 @@ export default {
                 const token = await userService.authenticateUser({ username, password });
 
                 return token;
+            }
+            catch(err) {
+                throw new ApolloError(err.message);
+            }
+        },
+        uploadAvatar: async (_, { avatar }, { user }) => {
+            try {
+                const { createReadStream, filename, mimetype } = await avatar;
+                const { id } = user
+                const userService = services.userService();
+                
+                cloudinary.config({
+                    cloud_name: process.env.CLOUD_NAME,
+                    api_key: process.env.CLOUD_KEY,
+                    api_secret: process.env.CLOUD_SECRET
+                });
+
+                console.log(filename, mimetype);
+
+                try {
+                    const result: any = await new Promise((resolve, reject) => {
+                        console.log("Run here");
+                        createReadStream().pipe(cloudinary.uploader.upload_stream((err, result) => {
+                            if (err) reject(err);
+                            
+                            resolve(result);
+                        }))
+                    });
+                    
+                    const updatedUser = await userService.uploadAvatar({ id, avatarUrl: result.secure_url });
+
+                    return updatedUser;
+                }
+                catch(err) {
+                    throw new Error('There was a problem uploading your avatar');
+                }
             }
             catch(err) {
                 throw new ApolloError(err.message);

@@ -4,6 +4,7 @@ export default gql`
     type User {
         id: ID!
         username: String!
+        avatarUrl: String
         posts: [Post]
         likedPosts: [Post]
         createdDate: DateTime!
@@ -26,5 +27,6 @@ export default gql`
     extend type Mutation {
         signUp(data: UsernameAndPassword!): User!
         signIn(data: UsernameAndPassword!): Token!
+        uploadAvatar(avatar: Upload!): User!
     }
 `;

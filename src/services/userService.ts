@@ -71,12 +71,25 @@ const userService = () => {
         };
     }
 
+    const uploadAvatar = async ({ id, avatarUrl }: { id: string, avatarUrl: string }) => {
+        const foundUser = await userRepository.findOne({ id }, { relations: ['posts', 'likedPosts'] });
+    
+        if (!foundUser) throw new Error('User not found');
+
+        foundUser.avatarUrl = avatarUrl;
+
+        const updatedUser = await userRepository.save(foundUser);
+    
+        return updatedUser;
+    }
+
     return {
         getAllUsers,
         getUserById,
         createUser,
         deleteUserById,
-        authenticateUser
+        authenticateUser,
+        uploadAvatar
     }
 }
 
