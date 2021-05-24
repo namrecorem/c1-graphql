@@ -1,6 +1,8 @@
-import { ApolloError } from 'apollo-server';
+import { ApolloError, withFilter, PubSub } from 'apollo-server';
 
 import services from '../services';
+
+const pubsub = new PubSub();
 
 export default {
     Post: {
@@ -54,6 +56,8 @@ export default {
 
                 const newPost = await postService.createPost({ title, content, authorId: id });
 
+                pubsub.publish('POST_ADDED', { postAdded: newPost });
+
                 return newPost;
             }
             catch(err) {
@@ -87,6 +91,17 @@ export default {
             catch(err) {
                 throw new ApolloError(err.message)
             }
+        }
+    },
+
+    Subscription: {
+        postAdded: {
+            subscribe: withFilter(
+                () => pubsub.asyncIterator('POST_ADDED'),
+                (payload, variables) => {
+                    return payload.postAdded.author.id === variables.authorId;
+                }
+            )
         }
     }
 };

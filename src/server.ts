@@ -4,7 +4,7 @@ import 'reflect-metadata';
 
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
-import auth from './services/auth';
+import context from './services/context';
 
 const initServer = () => {
     // Database connection
@@ -25,10 +25,18 @@ const initServer = () => {
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        context: auth
+        context,
+        subscriptions: {
+            path: '/subscriptions',
+            onConnect: () => console.log('Someone connected'),
+            onDisconnect: () => console.log('Someone disconnected')
+        }
     });
 
-    server.listen().then(({ url }) => console.log(`Server is running at ${url}`));
+    server.listen().then(({ url, subscriptionsUrl }) => {
+        console.log(`Server ready at ${url}`);
+        console.log(`Subscription ready at ${subscriptionsUrl}`);
+    });
 }
 
 export default initServer;

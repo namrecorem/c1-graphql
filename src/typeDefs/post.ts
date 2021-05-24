@@ -20,4 +20,8 @@ export default gql`
         deletePost(id: String!): String!
         likeOrUnlikePost(id: String!): Post!
     }
+
+    extend type Subscription {
+        postAdded(authorId: String!): Post!
+    }
 `;
