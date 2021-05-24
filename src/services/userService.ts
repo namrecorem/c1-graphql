@@ -10,7 +10,7 @@ const userService = () => {
 
     const getAllUsers = async () => {
         const users = await userRepository.find({ relations: ['posts', 'likedPosts'] });
-    
+
         return users;
     };
     

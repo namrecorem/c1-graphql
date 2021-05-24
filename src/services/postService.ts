@@ -10,7 +10,7 @@ const postService = () => {
 
     const getAllPosts = async () => {
         const posts = await postRepository.find({ relations: ['author', 'likedByUsers'] });
-    
+        
         return posts;
     };
     
